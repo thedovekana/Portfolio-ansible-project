@@ -1,0 +1,12 @@
+[Unit]
+Description= My python web application
+
+[Service]
+
+# User=tomcat
+WorkingDirectory=/home/tomcat/portfolio-website/
+ExecStart=/usr/bin/python3 /home/tomcat/portfolio-website/app.py 
+restart=always
+
+[Install]
+WantedBy=multi-user.target
