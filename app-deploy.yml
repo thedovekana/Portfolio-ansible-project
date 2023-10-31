@@ -42,7 +42,7 @@
       command: cd Portfolio-project && pip3 install -r requirements.txt
 
     - name: Configure the application as a service  by creating a systemd file
-       template:
+      template:
         src: templates/app.service.j2 
         dest: /etc/systemd/system/app.service
       notify: Restart systemd
