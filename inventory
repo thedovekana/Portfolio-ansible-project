@@ -2,5 +2,5 @@
 Webserver-node  ansible_host=172.31.21.66
 
 [all:vars]
-ansible_user=tomcat
+ansible_user=ansible
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
