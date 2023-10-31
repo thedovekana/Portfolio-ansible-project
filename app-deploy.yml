@@ -1,0 +1,62 @@
+---
+- name: Deploy Python Application
+  hosts: Webserver-node
+  become: yes  
+
+  tasks:
+    - name: Update package cache (for apt)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"  # Use this condition if your target is a Debian-based system
+
+    - name: Install system-level dependencies
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python3
+        - python3-pip
+      when: ansible_os_family == "Debian"  # Adjust this condition for your target OS
+
+    - name: Update package cache (for yum)
+      yum:
+        name: '*'
+        state: latest
+      when: ansible_os_family == "RedHat"  # Use this condition if your target is a RedHat-based system
+
+    - name: Install system-level dependencies (RedHat)
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python3
+        - python3-pip
+      when: ansible_os_family == "RedHat"  # Adjust this condition for your target OS
+
+    - name: Clone the repo from github
+      git:
+        repo: https://github.com/Joshuaoji/portfolio-website.git
+        dest: /home/tomcat/
+
+    - name: Install Python dependencies using pip
+      pip:
+        requirements: /home/tomcat/portfolio-website/requirements.txt 
+
+    - name: Configure the application as a service  by creating a systemd file
+       template:
+        src: templates/app.service.j2 
+        dest: /etc/systemd/system/app.service
+      notify: Reload systemd
+
+    - name: Start the service & enable it
+      systemd:
+        name: app
+        state: started
+        enabled: yes
+      notify: Reload systemd
+
+  handlers:
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
