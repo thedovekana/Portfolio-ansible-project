@@ -37,7 +37,7 @@
 
     - name: Clone the repo from github
       git:
-        repo: https://github.com/Joshuaoji/portfolio-website.git
+        repo: https://github.com/thedovekana/Portfolio-project.git
         dest: /home/tomcat/portfolio
 
     - name: Install Python dependencies using pip
