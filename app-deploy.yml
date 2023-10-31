@@ -1,4 +1,24 @@
-- name: Update package cache (for yum)
+---
+- name: Deploy Python Application
+  hosts: Webserver-node
+  become: yes  
+
+  tasks:
+    - name: Update package cache (for apt)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"  # Use this condition if your target is a Debian-based system
+
+    - name: Install system-level dependencies
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python3
+        - python3-pip
+      when: ansible_os_family == "Debian"  # Adjust this condition for your target OS
+
+    - name: Update package cache (for yum)
       yum:
         name: '*'
         state: latest
@@ -11,20 +31,19 @@
       with_items:
         - python3
         - python3-pip
-        - pip
       when: ansible_os_family == "RedHat"  # Adjust this condition for your target OS
 
     - name: Clone the repo from github
       git:
-        repo: https://github.com/Joshuaoji/portfolio-website.git
-        dest: /home/tomcat/portfolio-website
+        repo: https://github.com/thedovekana/Portfolio-project.git
+        dest: /home/tomcat/Portfolio-project 
 
     - name: Install Python dependencies using pip
-      command: cd portfolio-website && pip3 install -r requirements.txt
+      command: cd Portfolio-project && pip3 install -r requirements.txt
 
     - name: Configure the application as a service  by creating a systemd file
-      template:
-        src: templates/app.service.j2
+       template:
+        src: templates/app.service.j2 
         dest: /etc/systemd/system/app.service
       notify: Restart systemd
 
@@ -40,5 +59,4 @@
       systemd:
         name: app
         state: restarted
-
 
