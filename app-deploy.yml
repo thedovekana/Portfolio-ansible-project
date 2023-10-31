@@ -36,14 +36,14 @@
     - name: Clone the repo from github
       git:
         repo: https://github.com/Joshuaoji/portfolio-website.git
-        dest: /home/tomcat/
+        dest: /home/tomcat/portfolio
 
     - name: Install Python dependencies using pip
       pip:
         requirements: /home/tomcat/portfolio-website/requirements.txt 
 
     - name: Configure the application as a service  by creating a systemd file
-       template:
+      template:
         src: templates/app.service.j2 
         dest: /etc/systemd/system/app.service
       notify: Reload systemd
