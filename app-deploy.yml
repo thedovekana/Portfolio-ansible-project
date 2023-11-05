@@ -46,7 +46,11 @@
         src: templates/app.service.j2 
         dest: /etc/systemd/system/app.service
         mode: '0755'
-      notify: Restart systemd
+
+    - name: reload configuration
+      systemd:
+        name: app
+        daemon_reload: yes    
 
     - name: Start the service & enable it
       systemd:
