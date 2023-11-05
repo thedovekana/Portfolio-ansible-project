@@ -1,6 +1,6 @@
 ---
 - name: Deploy Python Application
-  hosts: Webserver-node
+  hosts: webserver
   become: yes  
 
   tasks:
@@ -36,7 +36,7 @@
     - name: Clone the repo from github
       git:
         repo: https://github.com/thedovekana/Portfolio-project.git
-        dest: /home/tomcat/Portfolio-project 
+        dest: /home/ansible/Portfolio-project/ 
 
     - name: Install Python dependencies using pip
       command: cd Portfolio-project && pip3 install -r requirements.txt
@@ -45,6 +45,7 @@
       template:
         src: templates/app.service.j2 
         dest: /etc/systemd/system/app.service
+        mode: '0755'
       notify: Restart systemd
 
     - name: Start the service & enable it
